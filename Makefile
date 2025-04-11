@@ -6,10 +6,18 @@ NAME = emu
 SRC = $(NAME).c
 TARGET = $(NAME).exe
 
-all: clean $(TARGET)
+BUILD_DIR = build
+SRC_DIR = src
 
-$(TARGET) : $(SRC)
-	$(CC) $(CFLAGS) $(SRC) -o $(TARGET)
+.PHONY: all clean emu tests
+
+all: clean emu tests
+
+emu:
+	$(CC) $(CFLAGS) $(SRC) -o $(BUILD_DIR)/$(TARGET)
+
+tests:
+	$(MAKE) -C $(SRC_DIR)/tests BUILD_DIR=$(abspath $(BUILD_DIR))
 
 clean:
-	rm -rf $(TARGET)
+	rm -rf $(BUILD_DIR)/*
