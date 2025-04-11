@@ -1,6 +1,9 @@
-#include "stdio.h"
+#include "Core.h"
 
 int main() {
-    printf("Hello Worldadsf!\n");
+    CPU cpu;
+    cpu.a.l = 12;
+    cpu.a.h = 15;
+    printf("%02X\n", cpu.a.x);
     return 0;
 }

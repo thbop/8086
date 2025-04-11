@@ -1,6 +1,6 @@
 CC = gcc
 ASM = nasm
-CFLAGS = -g -o2 -Iinclude
+CFLAGS = -g -o2 -Isrc/include
 
 NAME = emu
 SRC = $(NAME).c
