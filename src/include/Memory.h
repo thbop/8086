@@ -1,15 +1,18 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#define MEMORY_MAX_SIZE  0x100000
+#define MEMORY_MAX_INDEX (MEMORY_MAX_SIZE-1)
+
 // Allocate 1 Mb of memory
 uint8_t *MemoryNew() {
-    // 0x00000 - 0xF423F
-    return calloc(1000000, 1);
+    // 0x00000 - 0xFFFFF
+    return calloc(MEMORY_MAX_SIZE, 1);
 }
 
 // Returns a pointer to the given segment and offset
 uint8_t *MemoryGet( uint8_t *memory, uint16_t segment, uint16_t offset ) {
-    return memory + ( segment << 4 ) + offset;
+    return memory + ((( segment << 4 ) + offset) & MEMORY_MAX_INDEX);
 }
 
 // Returns a byte from a given segment and offset
