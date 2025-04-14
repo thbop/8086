@@ -1,11 +1,12 @@
 #ifndef X8086_H
 #define X8086_H
 
+// For general purpose registers
 typedef union {
     struct {
-        uint8_t l, h;
+        uint8_t L, H;
     };
-    uint16_t x;
+    uint16_t X;
 } Register;
 
 typedef union {
@@ -30,11 +31,28 @@ typedef union {
 
 typedef struct {
     // https://www.geeksforgeeks.org/types-of-registers-in-8086-microprocessor/
-    Register a, b, c, d;         // General purpose registers
-    uint16_t sp, bp, si, di, ip; // Special purpose registers
-    uint16_t cs, ds, ss, es;     // Segment registers
+    Register A, B, C, D;         // General purpose registers
+    uint16_t SP, BP, SI, DI, IP; // Special purpose registers
+    uint16_t CS, DS, SS, ES;     // Segment registers
     Flags flags;                 // Flags
 } CPU;
+
+// Sets all CPU registers and flags to zero
+void CPUReset( CPU *cpu ) {
+    memset(cpu, 0, sizeof(CPU));
+}
+
+// Fetches the byte located at CS:IP and increments IP (program counter)
+uint8_t CPUFetchByte( CPU *cpu, uint8_t *memory ) {
+    return MemoryReadByte(memory, cpu->CS, cpu->IP++);
+}
+
+// Fetches the word located at CS:IP and increments IP by 2
+uint16_t CPUFetchWord( CPU *cpu, uint8_t *memory ) {
+    uint16_t value = MemoryReadWord(memory, cpu->CS, cpu->IP);
+    cpu->IP += 2;
+    return value;
+}
 
 
 #endif
