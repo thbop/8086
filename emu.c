@@ -1,27 +1,23 @@
 #include "Core.h"
 
+void LoadProgram( uint8_t *memory ) {
+    // This will only work if you run emu.exe from outside the build directory
+    uint8_t *fileBuffer = StorageLoadSectors("build/main.bin", 0, 1);
+    StorageLoad(fileBuffer, 1, memory, 0x0500);
+    free(fileBuffer);
+}
+
 int main() {
     // Initialize
     CPU cpu;
     CPUReset(&cpu);
+    cpu.CS = 0x0500;
 
     uint8_t *memory = MemoryNew();
-
-
-    // Little tests
-    cpu.CS = 0x0001;
-    uint8_t testIns[] = {
-        0xB8, 0xD2, 0x04 // mov ax, 1234
-    };
-    memcpy(MemoryGet(memory, cpu.CS, 0), testIns, sizeof(testIns));
+    LoadProgram(memory);
 
     printf("Instruction: %02X\n", CPUFetchByte(&cpu, memory));
-    printf("Data: %02X\n\n", CPUFetchWord(&cpu, memory));
-
-    // Out of bounds
-    MemoryWriteByte(memory, 0xFFFF, 0xFFFF, 0xAD);
-    printf("Out of bounds data: %02X\n", MemoryReadByte(memory, 0x0FF0, 0x00EF));
-
+    printf("Argument: %02X\n", CPUFetchWord(&cpu, memory));
 
     // Cleanup
     MemoryFree(memory);

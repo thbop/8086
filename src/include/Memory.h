@@ -7,7 +7,11 @@
 // Allocate 1 Mb of memory
 uint8_t *MemoryNew() {
     // 0x00000 - 0xFFFFF
-    return calloc(MEMORY_MAX_SIZE, 1);
+    uint8_t *memory = calloc(MEMORY_MAX_SIZE, 1);
+    if ( memory == NULL )
+        fprintf(stderr, "Failed to allocate emulator memory!\n");
+
+    return memory;
 }
 
 // Returns a pointer to the given segment and offset

@@ -7,6 +7,7 @@
 #include "stdint.h"
 
 #include "Memory.h"
+#include "Storage.h"
 #include "8086.h"
 
 #endif
