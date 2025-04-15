@@ -16,8 +16,10 @@ int main() {
     uint8_t *memory = MemoryNew();
     LoadProgram(memory);
 
-    CPUExecute(&cpu, memory);
-    printf("AX = %02X\n", cpu.A.X);
+    for (int i = 0; i < 6; i++)
+        CPUExecute(&cpu, memory);
+
+    printf("AX=%02X BX=%02X\n", cpu.A.X, cpu.B.X);
 
     // Cleanup
     MemoryFree(memory);
