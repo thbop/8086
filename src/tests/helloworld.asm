@@ -1,3 +1,3 @@
 bits 16
 
-mov ax, 1234
+mov ah, 65h

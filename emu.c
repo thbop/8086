@@ -16,8 +16,8 @@ int main() {
     uint8_t *memory = MemoryNew();
     LoadProgram(memory);
 
-    printf("Instruction: %02X\n", CPUFetchByte(&cpu, memory));
-    printf("Argument: %02X\n", CPUFetchWord(&cpu, memory));
+    CPUExecute(&cpu, memory);
+    printf("AX = %02X\n", cpu.A.X);
 
     // Cleanup
     MemoryFree(memory);
