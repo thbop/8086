@@ -13,10 +13,10 @@ this works via experimentation with nasm. Essentially the "address" is composed
 of two 3 bit numbers--one for the source register and the other for the
 destination register. Here are the addresses of every register depending on the
 instruction:
-| Opcode | AX | AL | AH | BX | BL | BH | CX | CL | CH | DX | DL | DH | SP | BP | SI | DI | CS | DS | SS | ES |
+|  Type  | AX | AL | AH | BX | BL | BH | CX | CL | CH | DX | DL | DH | SP | BP | SI | DI | CS | DS | SS | ES |
 |--------|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|
-|  0x88  |    | 00 | 04 |    | 03 | 07 |    | 01 | 05 |    | 02 | 06 |    |    |    |    |    |    |    |    |
-|  0x89  | 00 |    |    | 03 |    |    | 01 |    |    | 02 |    |    | 04 | 05 | 06 | 07 |    |    |    |    |
+| Eb  Gb |    | 00 | 04 |    | 03 | 07 |    | 01 | 05 |    | 02 | 06 |    |    |    |    |    |    |    |    |
+| Ev  Gv | 00 |    |    | 03 |    |    | 01 |    |    | 02 |    |    | 04 | 05 | 06 | 07 |    |    |    |    |
 
 Both addresses are stored as a byte argument in this format:
 

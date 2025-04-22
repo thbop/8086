@@ -5,11 +5,17 @@
 
 // Classes (the upper 4 bits) -------------------------------------------------
 enum {
+    CLASS_80     = 0x80,
     CLASS_MOV_IM = 0xB0,
 };
 
 // Targets (lower 4 bits) -----------------------------------------------------
 
+// Class 80
+enum {
+    C80_MOV_EB_GB = 0x08,
+    C80_MOV_EV_GV = 0x09,
+};
 
 // Move Immediate
 enum {
@@ -39,5 +45,6 @@ enum {
     REG_OP_EB_GB,
     REG_OP_EV_GV,
 };
+
 
 #endif

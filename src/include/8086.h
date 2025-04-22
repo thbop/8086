@@ -43,7 +43,7 @@ typedef struct {
 // Pointers to two registers
 // Reference http://www.mlsite.net/8086/#addr_E
 typedef struct {
-    uint16_t *dest, *src;
+    void *dest, *src;
 } RegisterOperation;
 
 
@@ -74,6 +74,18 @@ RegisterOperation CPUFetchRegisterOperation( CPU *cpu, uint8_t *memory, uint8_t 
     RegisterOperation out;
 
     switch ( registerOperationType ) {
+        case REG_OP_EB_GB: {
+            uint8_t *rib[8]; // Register Index Buffer
+            rib[0] = &(cpu->A.L); rib[4] = &(cpu->A.H);
+            rib[1] = &(cpu->C.L); rib[5] = &(cpu->C.H);
+            rib[2] = &(cpu->D.L); rib[6] = &(cpu->D.H);
+            rib[3] = &(cpu->B.L); rib[7] = &(cpu->B.H);
+
+            out.dest = rib[ operation & 7 ];
+            out.src  = rib[ ( operation >> 3 ) & 7 ];
+
+            break;
+        }
         case REG_OP_EV_GV:
             // Check out docs/cpu.md#register-operations
             out.dest = ( (uint16_t*) cpu ) + ( operation & 7 );
@@ -86,6 +98,21 @@ RegisterOperation CPUFetchRegisterOperation( CPU *cpu, uint8_t *memory, uint8_t 
 
 
 // Instruction execution ------------------------------------------------------
+
+void CPUExecuteClass80( CPU *cpu, uint8_t *memory, uint8_t target ) {
+    switch (target) {
+        case C80_MOV_EB_GB: {
+            RegisterOperation regOp = CPUFetchRegisterOperation(cpu, memory, REG_OP_EB_GB);
+            *(uint8_t*)(regOp.dest) = *(uint8_t*)(regOp.src);
+            break;
+        }
+        case C80_MOV_EV_GV: {
+            RegisterOperation regOp = CPUFetchRegisterOperation(cpu, memory, REG_OP_EV_GV);
+            *(uint16_t*)(regOp.dest) = *(uint16_t*)(regOp.src);
+            break;
+        }
+    }
+}
 
 // Executes move immediate instructions by switching through the
 // lower 4 bits (target) of the instruction
@@ -111,22 +138,19 @@ void CPUMoveImmediate( CPU *cpu, uint8_t *memory, uint8_t target ) {
 }
 
 
-
-
 // Executes one instruction
 void CPUExecute( CPU *cpu, uint8_t *memory ) {
-    uint8_t instruction = CPUFetchByte(cpu, memory);
-    switch (instruction & 0xF0) {
+    uint8_t
+        instruction = CPUFetchByte(cpu, memory),
+        class       = instruction & 0xF0,
+        target      = instruction & 0x0F;
+    switch (class) {
         case CLASS_MOV_IM:
-            CPUMoveImmediate(cpu, memory, instruction & 0x0F);
+            CPUMoveImmediate(cpu, memory, target);
             break;
 
-        // TODO: Structure this better
-        case 0x80:
-            if ( (instruction & 0x0F) == 0x09 ) {
-                RegisterOperation regOp = CPUFetchRegisterOperation(cpu, memory, REG_OP_EV_GV);
-                *(regOp.dest) = *(regOp.src);
-            }
+        case CLASS_80:
+            CPUExecuteClass80(cpu, memory, target);
             break;
     }
 }
