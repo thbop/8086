@@ -23,3 +23,13 @@ Both addresses are stored as a byte argument in this format:
 `0b11SS SDDD`
 
 `S` is the source address and `D` is destination address.
+
+
+## Classes and Targets
+To speed up execution time, I am separating instruction decoding into two
+stages. The first stage decodes the upper four bits (class), while the
+second stage decodes the lower four bits (target). Some classes, like 0xB0
+(possibly only 0xB0) consist purely of moving immediate values into registers;
+thus, the function that decodes 0xB0's targets is called `CPUMoveImmediate`.
+Other classes, such as 0x80 contain multiple types of instructions, thus
+0x80's decode function is named `CPUExecuteClass80`.

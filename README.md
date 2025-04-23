@@ -1,8 +1,10 @@
 # 8086
 8086 Emulator
 
-## My Documentation
+## Notes
 I put some of my notes and thoughts of the 8086 here: [docs.md](/docs/docs.md).
+
+If you wish to contribute, check [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## References
 - Registers:

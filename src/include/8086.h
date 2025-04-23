@@ -99,6 +99,7 @@ RegisterOperation CPUFetchRegisterOperation( CPU *cpu, uint8_t *memory, uint8_t 
 
 // Instruction execution ------------------------------------------------------
 
+// Executes all opcodes with an upper four bits of 0x8
 void CPUExecuteClass80( CPU *cpu, uint8_t *memory, uint8_t target ) {
     switch (target) {
         case C80_MOV_EB_GB: {
@@ -137,6 +138,7 @@ void CPUMoveImmediate( CPU *cpu, uint8_t *memory, uint8_t target ) {
     }
 }
 
+// Executes all opcodes with an upper four bits of 0xF
 void CPUExecuteClassF0( CPU *cpu, uint8_t *memory, uint8_t target ) {
     switch (target) {
         case CF0_HLT:
@@ -155,7 +157,7 @@ void CPUExecute( CPU *cpu, uint8_t *memory ) {
     switch (class) {
         case CLASS_80:     CPUExecuteClass80(cpu, memory, target); break;
         case CLASS_MOV_IM: CPUMoveImmediate(cpu, memory, target);  break;
-        case CLASS_F0:     CPUExecuteClassF0(cpu, memory, target);
+        case CLASS_F0:     CPUExecuteClassF0(cpu, memory, target); break;
     }
 }
 
