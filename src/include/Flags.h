@@ -31,10 +31,7 @@ enum {
     FLAG_SET_UNDEFINED, // Unused
 };
 
-enum {
-    FLAG_ARG_BYTE,
-    FLAG_ARG_WORD,
-};
+
 
 typedef struct {
     uint8_t C, Z, S, O, P, A;
@@ -46,6 +43,7 @@ typedef struct {
 // Essentially, it evaluates the result of an ALU operation, 8 or 16 bit, and
 // sets the carry flag if 8th or 16th bits are set respectively.
 void FlagSetCarry( Flags *flags, uint32_t result, uint8_t size ) {
+    // TODO: Check if this handles subtraction borrows correctly
     switch (size) {
         case FLAG_ARG_BYTE:
             if ( ( result >> 7 ) & 1 ) flags->CF = 1;
@@ -65,7 +63,7 @@ void FlagSetZero( Flags *flags, uint32_t result ) {
 }
 
 // Sets the sign flag when the result is negative
-void FlagSetCarry( Flags *flags, uint32_t result, uint8_t size ) {
+void FlagSetSign( Flags *flags, uint32_t result, uint8_t size ) {
     switch (size) {
         case FLAG_ARG_BYTE:
             if ( ( result >> 6 ) & 1 ) flags->SF = 1;
@@ -79,22 +77,28 @@ void FlagSetCarry( Flags *flags, uint32_t result, uint8_t size ) {
 }
 
 // Sets the overflow flag if the result overflows a register
-void FlagSetCarry( Flags *flags, uint32_t result, uint8_t size ) {
-    switch (size) {
-        case FLAG_ARG_BYTE:
-            if ( result >> 8 ) flags->OF = 1;
-            else               flags->OF = 0;
-            break;
-        case FLAG_ARG_WORD:
-            if ( result >> 16 ) flags->OF = 1;
-            else                flags->OF = 0;
-            break;
-    }
+void FlagSetOverflow( Flags *flags, uint32_t result, uint8_t size ) {
+    // Inaccurate
+    // switch (size) {
+    //     case FLAG_ARG_BYTE:
+    //         if ( result >> 8 ) flags->OF = 1;
+    //         else               flags->OF = 0;
+    //         break;
+    //     case FLAG_ARG_WORD:
+    //         if ( result >> 16 ) flags->OF = 1;
+    //         else                flags->OF = 0;
+    //         break;
+    // }
 }
 
 // Sets the parity flag if the result's LSB has an even number of 1's
-void FlagSetCarry( Flags *flags, uint32_t result ) {
+void FlagSetParity( Flags *flags, uint32_t result ) {
     flags->PF = !__builtin_parity(result & 0xFF);
+}
+
+// Sets the auxiliary carry flag if ...
+void FlagSetAuxiliary( Flags *flags, FlagOperation operation ) {
+    
 }
 
 #endif
