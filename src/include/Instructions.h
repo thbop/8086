@@ -64,13 +64,5 @@ enum {
     CF0_HLT = 0x04,
 };
 
-// Misc -----------------------------------------------------------------------
-
-// Register Operation Types
-enum {
-    REG_OP_EB_GB,
-    REG_OP_EV_GV,
-};
-
 
 #endif

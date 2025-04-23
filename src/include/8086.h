@@ -3,35 +3,6 @@
 
 // Definitions ----------------------------------------------------------------
 
-// For general purpose registers
-typedef union {
-    struct {
-        uint8_t L, H;
-    };
-    uint16_t X;
-} Register;
-
-typedef union {
-    // https://www.geeksforgeeks.org/types-of-registers-in-8086-microprocessor/
-    struct {
-        uint16_t
-            CF  : 1, // Carry Flag
-            _u0 : 1,
-            PF  : 1, // Parity Flag
-            _u1 : 1,
-            AF  : 1, // Auxiliary Carry Flag
-            _u2 : 1,
-            ZF  : 1, // Zero Flag
-            SF  : 1, // Sign Flag
-            TF  : 1, // Trap Flag
-            IF  : 1, // Interrupt Flag
-            DF  : 1, // Direction Flag
-            OF  : 1; // Overflow Flag
-    };
-    uint16_t value;
-} Flags;
-
-
 typedef struct {
     // https://www.geeksforgeeks.org/types-of-registers-in-8086-microprocessor/
     Register A, C, D, B;         // General purpose registers
@@ -40,13 +11,7 @@ typedef struct {
     Flags flags;                 // Flags
 } CPU;
 
-// Pointers to two registers
-// Reference http://www.mlsite.net/8086/#addr_E
-typedef struct {
-    void *dest, *src;
-} RegisterOperation;
-
-
+#include "Register.h"
 
 // Helper functions -----------------------------------------------------------
 
@@ -69,29 +34,9 @@ uint16_t CPUFetchWord( CPU *cpu, uint8_t *memory ) {
 
 // Fetches, parses, and returns the correct register operation
 // Reference http://www.mlsite.net/8086/#addr_E
-RegisterOperation CPUFetchRegisterOperation( CPU *cpu, uint8_t *memory, uint8_t registerOperationType ) {
+RegisterOperation CPUFetchRegisterOperation( CPU *cpu, uint8_t *memory, uint8_t type ) {
     uint8_t operation = CPUFetchByte(cpu, memory);
-    RegisterOperation out;
-
-    switch ( registerOperationType ) {
-        case REG_OP_EB_GB: {
-            uint8_t *rib[8]; // Register Index Buffer
-            rib[0] = &(cpu->A.L); rib[4] = &(cpu->A.H);
-            rib[1] = &(cpu->C.L); rib[5] = &(cpu->C.H);
-            rib[2] = &(cpu->D.L); rib[6] = &(cpu->D.H);
-            rib[3] = &(cpu->B.L); rib[7] = &(cpu->B.H);
-
-            out.dest = rib[ operation & 7 ];
-            out.src  = rib[ ( operation >> 3 ) & 7 ];
-
-            break;
-        }
-        case REG_OP_EV_GV:
-            // Check out docs/cpu.md#register-operations
-            out.dest = ( (uint16_t*) cpu ) + ( operation & 7 );
-            out.src  = ( (uint16_t*) cpu ) + ( ( operation >> 3 ) & 7 );
-            break;
-    }
+    RegisterOperation out = GetRegisterOperation(cpu, memory, type, operation);
 
     return out;
 }

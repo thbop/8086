@@ -10,6 +10,8 @@
 #include "Memory.h"
 #include "Storage.h"
 #include "Instructions.h"
+#include "Flags.h"
+#include "Register.h"
 #include "8086.h"
 
 #endif
