@@ -25,8 +25,8 @@ typedef union {
 } Flags;
 
 enum {
-    FLAG_SET_1,
     FLAG_SET_0,
+    FLAG_SET_1,
     FLAG_SET_REGISTER,
     FLAG_SET_UNDEFINED, // Unused
 };
@@ -96,6 +96,57 @@ void FlagSetParity( Flags *flags, ALUResult result ) {
 void FlagSetAuxiliary( Flags *flags, ALUResult result ) {
     // Unfortunately, ChatGPT helped out with this one
     flags->AF = ( (result.A ^ result.B ^ result.result ) & 0x10 ) != 0;
+}
+
+// Sets all flags given the flags, a flag setter, and an ALU result
+void FlagSet( Flags *flags, FlagSetter setter, ALUResult result ) {
+    // There is a better way to do this, but since flags are bit fields I do
+    // not have many good options.
+
+    // TODO: Refactor sort of everything so that this function does not violate
+    // DRY.
+
+    // Carry flag
+    switch ( setter.C ) {
+        case FLAG_SET_0:        flags->CF = 0;                   break;
+        case FLAG_SET_1:        flags->CF = 1;                   break;
+        case FLAG_SET_REGISTER: FlagSetCarry(flags, result);     break;
+    }
+
+    // Zero flag
+    switch ( setter.Z ) {
+        case FLAG_SET_0:        flags->ZF = 0;                   break;
+        case FLAG_SET_1:        flags->ZF = 1;                   break;
+        case FLAG_SET_REGISTER: FlagSetZero(flags, result);      break;
+    }
+
+    // Sign flag
+    switch ( setter.S ) {
+        case FLAG_SET_0:        flags->SF = 0;                   break;
+        case FLAG_SET_1:        flags->SF = 1;                   break;
+        case FLAG_SET_REGISTER: FlagSetSign(flags, result);      break;
+    }
+
+    // Overflow flag
+    switch ( setter.O ) {
+        case FLAG_SET_0:        flags->OF = 0;                   break;
+        case FLAG_SET_1:        flags->OF = 1;                   break;
+        case FLAG_SET_REGISTER: FlagSetOverflow(flags, result);  break;
+    }
+
+    // Parity flag
+    switch ( setter.P ) {
+        case FLAG_SET_0:        flags->PF = 0;                   break;
+        case FLAG_SET_1:        flags->PF = 1;                   break;
+        case FLAG_SET_REGISTER: FlagSetParity(flags, result);    break;
+    }
+
+    // Auxilary flag
+    switch ( setter.A ) {
+        case FLAG_SET_0:        flags->AF = 0;                   break;
+        case FLAG_SET_1:        flags->AF = 1;                   break;
+        case FLAG_SET_REGISTER: FlagSetAuxiliary(flags, result); break;
+    }
 }
 
 #endif
