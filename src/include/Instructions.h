@@ -5,6 +5,7 @@
 
 // Classes (the upper 4 bits) -------------------------------------------------
 enum {
+    CLASS_00     = 0x00,
     CLASS_80     = 0x80,
     CLASS_MOV_IM = 0xB0,
     CLASS_F0     = 0xF0,
@@ -12,6 +13,25 @@ enum {
 
 
 // Targets (lower 4 bits) -----------------------------------------------------
+
+// Class 00
+enum {
+    C00_ADD_EB_GB,
+    C00_ADD_EV_GV,
+    C00_ADD_GB_EB,
+    C00_ADD_GV_EV,
+    C00_ADD_AL_IB,
+    C00_ADD_AX_IV,
+    C00_PUSH_ES,
+    C00_POP_ES,
+    C00_OR_EB_GB,
+    C00_OR_EV_GV,
+    C00_OR_GB_EB,
+    C00_OR_GV_EV,
+    C00_OR_AL_IB,
+    C00_OR_AX_IV,
+    C00_PUSH_CS,
+};
 
 // Class 80
 enum {
@@ -21,22 +41,22 @@ enum {
 
 // Move Immediate
 enum {
-    MOV_IM_AL = 0x00,
-    MOV_IM_CL = 0x01,
-    MOV_IM_DL = 0x02,
-    MOV_IM_BL = 0x03,
-    MOV_IM_AH = 0x04,
-    MOV_IM_CH = 0x05,
-    MOV_IM_DH = 0x06,
-    MOV_IM_BH = 0x07,
-    MOV_IM_AX = 0x08,
-    MOV_IM_CX = 0x09,
-    MOV_IM_DX = 0x0A,
-    MOV_IM_BX = 0x0B,
-    MOV_IM_SP = 0x0C,
-    MOV_IM_BP = 0x0D,
-    MOV_IM_SI = 0x0E,
-    MOV_IM_DI = 0x0F,
+    MOV_AL_IB,
+    MOV_CL_IB,
+    MOV_DL_IB,
+    MOV_BL_IB,
+    MOV_AH_IB,
+    MOV_CH_IB,
+    MOV_DH_IB,
+    MOV_BH_IB,
+    MOV_AX_IV,
+    MOV_CX_IV,
+    MOV_DX_IV,
+    MOV_BX_IV,
+    MOV_SP_IV,
+    MOV_BP_IV,
+    MOV_SI_IV,
+    MOV_DI_IV,
 };
 
 // Class F0

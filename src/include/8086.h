@@ -99,6 +99,22 @@ RegisterOperation CPUFetchRegisterOperation( CPU *cpu, uint8_t *memory, uint8_t 
 
 // Instruction execution ------------------------------------------------------
 
+// Executes all opcodes from the 0x00 class
+void CPUExecuteClass00( CPU *cpu, uint8_t *memory, uint8_t target ) {
+    switch (target) {
+        case C00_ADD_EB_GB: {
+            RegisterOperation regOp = CPUFetchRegisterOperation(cpu, memory, REG_OP_EB_GB);
+            *(uint8_t*)(regOp.dest) += *(uint8_t*)(regOp.src);
+            break;
+        }
+        case C00_ADD_EV_GV: {
+            RegisterOperation regOp = CPUFetchRegisterOperation(cpu, memory, REG_OP_EV_GV);
+            *(uint16_t*)(regOp.dest) += *(uint16_t*)(regOp.src);
+            break;
+        }
+    }
+}
+
 // Executes all opcodes with an upper four bits of 0x8
 void CPUExecuteClass80( CPU *cpu, uint8_t *memory, uint8_t target ) {
     switch (target) {
@@ -119,22 +135,22 @@ void CPUExecuteClass80( CPU *cpu, uint8_t *memory, uint8_t target ) {
 // lower 4 bits (target) of the instruction
 void CPUMoveImmediate( CPU *cpu, uint8_t *memory, uint8_t target ) {
     switch (target) {
-        case MOV_IM_AL: cpu->A.L = CPUFetchByte(cpu, memory); break;
-        case MOV_IM_CL: cpu->C.L = CPUFetchByte(cpu, memory); break;
-        case MOV_IM_DL: cpu->D.L = CPUFetchByte(cpu, memory); break;
-        case MOV_IM_BL: cpu->B.L = CPUFetchByte(cpu, memory); break;
-        case MOV_IM_AH: cpu->A.H = CPUFetchByte(cpu, memory); break;
-        case MOV_IM_CH: cpu->C.H = CPUFetchByte(cpu, memory); break;
-        case MOV_IM_DH: cpu->D.H = CPUFetchByte(cpu, memory); break;
-        case MOV_IM_BH: cpu->B.H = CPUFetchByte(cpu, memory); break;
-        case MOV_IM_AX: cpu->A.X = CPUFetchWord(cpu, memory); break;
-        case MOV_IM_CX: cpu->C.X = CPUFetchWord(cpu, memory); break;
-        case MOV_IM_DX: cpu->D.X = CPUFetchWord(cpu, memory); break;
-        case MOV_IM_BX: cpu->B.X = CPUFetchWord(cpu, memory); break;
-        case MOV_IM_SP: cpu->SP  = CPUFetchWord(cpu, memory); break;
-        case MOV_IM_BP: cpu->BP  = CPUFetchWord(cpu, memory); break;
-        case MOV_IM_SI: cpu->SI  = CPUFetchWord(cpu, memory); break;
-        case MOV_IM_DI: cpu->DI  = CPUFetchWord(cpu, memory); break;
+        case MOV_AL_IB: cpu->A.L = CPUFetchByte(cpu, memory); break;
+        case MOV_CL_IB: cpu->C.L = CPUFetchByte(cpu, memory); break;
+        case MOV_DL_IB: cpu->D.L = CPUFetchByte(cpu, memory); break;
+        case MOV_BL_IB: cpu->B.L = CPUFetchByte(cpu, memory); break;
+        case MOV_AH_IB: cpu->A.H = CPUFetchByte(cpu, memory); break;
+        case MOV_CH_IB: cpu->C.H = CPUFetchByte(cpu, memory); break;
+        case MOV_DH_IB: cpu->D.H = CPUFetchByte(cpu, memory); break;
+        case MOV_BH_IB: cpu->B.H = CPUFetchByte(cpu, memory); break;
+        case MOV_AX_IV: cpu->A.X = CPUFetchWord(cpu, memory); break;
+        case MOV_CX_IV: cpu->C.X = CPUFetchWord(cpu, memory); break;
+        case MOV_DX_IV: cpu->D.X = CPUFetchWord(cpu, memory); break;
+        case MOV_BX_IV: cpu->B.X = CPUFetchWord(cpu, memory); break;
+        case MOV_SP_IV: cpu->SP  = CPUFetchWord(cpu, memory); break;
+        case MOV_BP_IV: cpu->BP  = CPUFetchWord(cpu, memory); break;
+        case MOV_SI_IV: cpu->SI  = CPUFetchWord(cpu, memory); break;
+        case MOV_DI_IV: cpu->DI  = CPUFetchWord(cpu, memory); break;
     }
 }
 
@@ -155,6 +171,7 @@ void CPUExecute( CPU *cpu, uint8_t *memory ) {
         class       = instruction & 0xF0,
         target      = instruction & 0x0F;
     switch (class) {
+        case CLASS_00:     CPUExecuteClass00(cpu, memory, target); break;
         case CLASS_80:     CPUExecuteClass80(cpu, memory, target); break;
         case CLASS_MOV_IM: CPUMoveImmediate(cpu, memory, target);  break;
         case CLASS_F0:     CPUExecuteClassF0(cpu, memory, target); break;

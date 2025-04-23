@@ -1,9 +1,11 @@
 bits 16
 
-mov bx, 0xBEEF
+mov bx, 0x0502
+add cl, bl
+add cl, bh
 
-mov al, bh
-mov ah, bl
+mov ax, cx
+
 hlt
 
 
