@@ -20,7 +20,17 @@ int main() {
     while (cpu.running)
         CPUExecute(&cpu, memory);
 
-    printf("AX=%02X BX=%02X\n", cpu.A.X, cpu.B.X);
+    // printf("AX=%02X BX=%02X\n", cpu.A.X, cpu.B.X);
+
+    ALUOperation_t operation = {
+        .A = 127, .B = 1,
+        .operation = ALU_ADD,
+        .size = ALU_ARG_BYTE,
+    };
+    ALUResult result = ALUOperation(operation);
+    FlagSetOverflow(&cpu.flags, result);
+    printf("%02X\n", cpu.flags.OF);
+
 
     // Cleanup
     MemoryFree(memory);

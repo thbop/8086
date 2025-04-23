@@ -32,7 +32,6 @@ enum {
 };
 
 
-
 typedef struct {
     uint8_t C, Z, S, O, P, A;
 } FlagSetter;
@@ -76,18 +75,15 @@ void FlagSetSign( Flags *flags, ALUResult result ) {
 }
 
 // Sets the overflow flag if the result overflows a register
-void FlagSetOverflow( Flags *flags, uint32_t result, uint8_t size ) {
-    // Inaccurate
-    // switch (size) {
-    //     case FLAG_ARG_BYTE:
-    //         if ( result >> 8 ) flags->OF = 1;
-    //         else               flags->OF = 0;
-    //         break;
-    //     case FLAG_ARG_WORD:
-    //         if ( result >> 16 ) flags->OF = 1;
-    //         else                flags->OF = 0;
-    //         break;
-    // }
+void FlagSetOverflow( Flags *flags, ALUResult result ) {
+    switch (result.size) {
+        case ALU_ARG_BYTE:
+            flags->OF = ( (int8_t)result.result != (int32_t)result.result );
+            break;
+        case ALU_ARG_WORD:
+            flags->OF = ( (int16_t)result.result != (int32_t)result.result );
+            break;
+    }
 }
 
 // Sets the parity flag if the result's LSB has an even number of 1's
