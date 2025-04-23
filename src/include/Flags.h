@@ -40,18 +40,20 @@ typedef struct {
 // Functions ------------------------------------------------------------------
 
 // Sets the carry flag when appropriate for either byte or word arguments.
-// Essentially, it evaluates the result of an ALU operation, 8 or 16 bit, and
-// sets the carry flag if 8th or 16th bits are set respectively.
-void FlagSetCarry( Flags *flags, uint32_t result, uint8_t size ) {
-    // TODO: Check if this handles subtraction borrows correctly
-    switch (size) {
-        case FLAG_ARG_BYTE:
-            if ( ( result >> 7 ) & 1 ) flags->CF = 1;
-            else                       flags->CF = 0;
+void FlagSetCarry( Flags *flags, ALUResult result ) {
+    switch ( result.operation ) {
+        case ALU_ADD:                                       // Addition
+            switch (result.size) {
+                case ALU_ARG_BYTE:
+                    flags->CF = ( result.result > 0xFF );
+                    break;
+                case ALU_ARG_WORD:
+                    flags->CF = ( result.result > 0xFFFF );
+                    break;
+            }
             break;
-        case FLAG_ARG_WORD:
-            if ( ( result >> 15 ) & 1 ) flags->CF = 1;
-            else                        flags->CF = 0;
+        case ALU_SUB:                                       // Subtraction
+            flags->CF = ( result.B > result.A );
             break;
     }
 }

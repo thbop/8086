@@ -15,7 +15,7 @@ enum {
 
 typedef struct {
     uint16_t A, B;   // Operation arguments
-    uint16_t result; // Operation result
+    uint32_t result; // Operation result
     uint8_t
         operation,   // ALU operation
         size;        // byte or word size of arguments
