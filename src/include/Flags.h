@@ -42,7 +42,7 @@ typedef struct {
 void FlagSetCarry( Flags *flags, ALUResult result ) {
     switch ( result.operation ) {
         case ALU_ADD:                                       // Addition
-            switch (result.size) {
+            switch ( result.size ) {
                 case ALU_ARG_BYTE:
                     flags->CF = ( result.result > 0xFF );
                     break;
@@ -64,7 +64,7 @@ void FlagSetZero( Flags *flags, ALUResult result ) {
 
 // Sets the sign flag when the result is negative
 void FlagSetSign( Flags *flags, ALUResult result ) {
-    switch (result.size) {
+    switch ( result.size ) {
         case ALU_ARG_BYTE:
             flags->SF = ( (int8_t)result.result < 0 );
             break;
@@ -76,7 +76,7 @@ void FlagSetSign( Flags *flags, ALUResult result ) {
 
 // Sets the overflow flag if the result overflows a register
 void FlagSetOverflow( Flags *flags, ALUResult result ) {
-    switch (result.size) {
+    switch ( result.size ) {
         case ALU_ARG_BYTE:
             flags->OF = ( (int8_t)result.result != (int32_t)result.result );
             break;
@@ -91,9 +91,11 @@ void FlagSetParity( Flags *flags, ALUResult result ) {
     flags->PF = !__builtin_parity(result.result & 0xFF);
 }
 
-// Sets the auxiliary carry flag if ...
+// Sets the auxiliary carry flag if carry from bit 3 to bit 4 or a borrow from
+// bit 4 to bit 3
 void FlagSetAuxiliary( Flags *flags, ALUResult result ) {
-    
+    // Unfortunately, ChatGPT helped out with this one
+    flags->AF = ( (result.A ^ result.B ^ result.result ) & 0x10 ) != 0;
 }
 
 #endif
