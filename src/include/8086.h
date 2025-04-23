@@ -11,6 +11,7 @@ typedef struct {
     Flags flags;                 // Flags
 } CPU;
 
+// Include again for functions with access to CPU struct
 #include "Register.h"
 
 // Helper functions -----------------------------------------------------------
