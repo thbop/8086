@@ -59,21 +59,18 @@ void FlagSetCarry( Flags *flags, ALUResult result ) {
 }
 
 // Sets the zero flag when the result is zero
-void FlagSetZero( Flags *flags, uint32_t result ) {
-    if ( !result ) flags->ZF = 1;
-    else           flags->ZF = 0;
+void FlagSetZero( Flags *flags, ALUResult result ) {
+    flags->ZF = !result.result;
 }
 
 // Sets the sign flag when the result is negative
-void FlagSetSign( Flags *flags, uint32_t result, uint8_t size ) {
-    switch (size) {
-        case FLAG_ARG_BYTE:
-            if ( ( result >> 6 ) & 1 ) flags->SF = 1;
-            else                       flags->SF = 0;
+void FlagSetSign( Flags *flags, ALUResult result ) {
+    switch (result.size) {
+        case ALU_ARG_BYTE:
+            flags->SF = ( (int8_t)result.result < 0 );
             break;
-        case FLAG_ARG_WORD:
-            if ( ( result >> 14 ) & 1 ) flags->SF = 1;
-            else                        flags->SF = 0;
+        case ALU_ARG_WORD:
+            flags->SF = ( (int16_t)result.result < 0 );
             break;
     }
 }
@@ -94,12 +91,12 @@ void FlagSetOverflow( Flags *flags, uint32_t result, uint8_t size ) {
 }
 
 // Sets the parity flag if the result's LSB has an even number of 1's
-void FlagSetParity( Flags *flags, uint32_t result ) {
-    flags->PF = !__builtin_parity(result & 0xFF);
+void FlagSetParity( Flags *flags, ALUResult result ) {
+    flags->PF = !__builtin_parity(result.result & 0xFF);
 }
 
 // Sets the auxiliary carry flag if ...
-void FlagSetAuxiliary( Flags *flags, FlagOperation operation ) {
+void FlagSetAuxiliary( Flags *flags, ALUResult result ) {
     
 }
 
