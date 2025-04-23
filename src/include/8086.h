@@ -9,6 +9,8 @@ typedef struct {
     uint16_t SP, BP, SI, DI, IP; // Special purpose registers
     uint16_t CS, DS, SS, ES;     // Segment registers
     Flags flags;                 // Flags
+
+    bool running;
 } CPU;
 
 #include "Register.h"
@@ -18,6 +20,7 @@ typedef struct {
 // Sets all CPU registers and flags to zero
 void CPUReset( CPU *cpu ) {
     memset(cpu, 0, sizeof(CPU));
+    cpu->running = true;
 }
 
 // Fetches the byte located at CS:IP and increments IP (program counter)
@@ -103,7 +106,7 @@ void CPUMoveImmediate( CPU *cpu, uint8_t *memory, uint8_t target ) {
 void CPUExecuteClassF0( CPU *cpu, uint8_t *memory, uint8_t target ) {
     switch (target) {
         case CF0_HLT:
-            emu.running = false;
+            cpu->running = false;
             break;
     }
 }
