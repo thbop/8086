@@ -1,8 +1,5 @@
 #include "stdbool.h"
 
-struct {
-    bool running;
-} emu;
 
 #include "Core.h"
 
@@ -22,9 +19,8 @@ int main() {
     uint8_t *memory = MemoryNew();
     LoadProgram(&cpu, memory);
 
-    emu.running = true;
 
-    while (emu.running)
+    while (cpu.running)
         CPUExecute(&cpu, memory);
 
     printf("AX=%02X BX=%02X\n", cpu.A.X, cpu.B.X);
