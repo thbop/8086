@@ -137,6 +137,14 @@ void CPUMoveImmediate( CPU *cpu, uint8_t *memory, uint8_t target ) {
     }
 }
 
+void CPUExecuteClassF0( CPU *cpu, uint8_t *memory, uint8_t target ) {
+    switch (target) {
+        case CF0_HLT:
+            emu.running = false;
+            break;
+    }
+}
+
 
 // Executes one instruction
 void CPUExecute( CPU *cpu, uint8_t *memory ) {
@@ -145,13 +153,9 @@ void CPUExecute( CPU *cpu, uint8_t *memory ) {
         class       = instruction & 0xF0,
         target      = instruction & 0x0F;
     switch (class) {
-        case CLASS_MOV_IM:
-            CPUMoveImmediate(cpu, memory, target);
-            break;
-
-        case CLASS_80:
-            CPUExecuteClass80(cpu, memory, target);
-            break;
+        case CLASS_80:     CPUExecuteClass80(cpu, memory, target); break;
+        case CLASS_MOV_IM: CPUMoveImmediate(cpu, memory, target);  break;
+        case CLASS_F0:     CPUExecuteClassF0(cpu, memory, target);
     }
 }
 
