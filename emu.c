@@ -1,6 +1,3 @@
-#include "stdbool.h"
-
-
 #include "Core.h"
 
 void LoadProgram( CPU *cpu, uint8_t *memory ) {
