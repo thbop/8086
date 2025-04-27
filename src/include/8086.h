@@ -13,6 +13,7 @@ typedef struct {
     bool running;
 } CPU;
 
+// Include again for functions with access to CPU struct
 #include "Register.h"
 
 // Helper functions -----------------------------------------------------------
