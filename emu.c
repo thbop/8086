@@ -28,7 +28,14 @@ int main() {
         .size = ALU_ARG_BYTE,
     };
     ALUResult result = ALUOperation(operation);
-    FlagSetOverflow(&cpu.flags, result);
+    FlagSetter setter = {
+        .C = FLAG_SET_0,
+        .Z = FLAG_SET_REGISTER,
+        .S = FLAG_SET_REGISTER,
+        .O = FLAG_SET_0,
+        .P = FLAG_SET_REGISTER,
+    };
+    FlagSet(&cpu.flags, setter, result);
     printf("%02X\n", cpu.flags.OF);
 
 
