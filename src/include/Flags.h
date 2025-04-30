@@ -36,6 +36,16 @@ typedef struct {
     uint8_t C, Z, S, O, P, A;
 } FlagSetter;
 
+#define FLAG_SETTER_REG \
+    (FlagSetter){ \
+        .C = FLAG_SET_REGISTER, \
+        .Z = FLAG_SET_REGISTER, \
+        .S = FLAG_SET_REGISTER, \
+        .O = FLAG_SET_REGISTER, \
+        .P = FLAG_SET_REGISTER, \
+        .A = FLAG_SET_REGISTER, \
+    }
+
 // Functions ------------------------------------------------------------------
 
 // Sets the carry flag when appropriate for either byte or word arguments.

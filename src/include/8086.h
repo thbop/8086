@@ -51,14 +51,34 @@ RegisterOperation CPUFetchRegisterOperation( CPU *cpu, uint8_t *memory, uint8_t 
 // Executes all opcodes from the 0x00 class
 void CPUExecuteClass00( CPU *cpu, uint8_t *memory, uint8_t target ) {
     switch (target) {
-        case C00_ADD_EB_GB: {
+        case C00_ADD_EB_GB: { // Add and set flags
             RegisterOperation regOp = CPUFetchRegisterOperation(cpu, memory, REG_OP_EB_GB);
-            *(uint8_t*)(regOp.dest) += *(uint8_t*)(regOp.src);
+            ALUResult result = ALUOperation(
+                (ALUOperation_t){
+                    .A = *(uint8_t*)(regOp.dest),
+                    .B = *(uint8_t*)(regOp.src),
+                    .operation = ALU_ADD,
+                    .size      = ALU_ARG_BYTE,
+                }
+            );
+            FlagSet(&cpu->flags, FLAG_SETTER_REG, result);
+
+            *(uint8_t*)(regOp.dest) = (uint8_t)result.result;
             break;
         }
         case C00_ADD_EV_GV: {
             RegisterOperation regOp = CPUFetchRegisterOperation(cpu, memory, REG_OP_EV_GV);
-            *(uint16_t*)(regOp.dest) += *(uint16_t*)(regOp.src);
+            ALUResult result = ALUOperation(
+                (ALUOperation_t){
+                    .A = *(uint16_t*)(regOp.dest),
+                    .B = *(uint16_t*)(regOp.src),
+                    .operation = ALU_ADD,
+                    .size      = ALU_ARG_WORD,
+                }
+            );
+            FlagSet(&cpu->flags, FLAG_SETTER_REG, result);
+
+            *(uint16_t*)(regOp.dest) = result.result;
             break;
         }
     }

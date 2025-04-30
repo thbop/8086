@@ -20,23 +20,7 @@ int main() {
     while (cpu.running)
         CPUExecute(&cpu, memory);
 
-    // printf("AX=%02X BX=%02X\n", cpu.A.X, cpu.B.X);
-
-    ALUOperation_t operation = {
-        .A = 127, .B = 1,
-        .operation = ALU_ADD,
-        .size = ALU_ARG_BYTE,
-    };
-    ALUResult result = ALUOperation(operation);
-    FlagSetter setter = {
-        .C = FLAG_SET_0,
-        .Z = FLAG_SET_REGISTER,
-        .S = FLAG_SET_REGISTER,
-        .O = FLAG_SET_0,
-        .P = FLAG_SET_REGISTER,
-    };
-    FlagSet(&cpu.flags, setter, result);
-    printf("%02X\n", cpu.flags.OF);
+    printf("AX=%02X BX=%02X OF=%02X\n", cpu.A.X, cpu.B.X, cpu.flags.OF);
 
 
     // Cleanup
